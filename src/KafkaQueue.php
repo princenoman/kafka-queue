@@ -44,8 +44,16 @@ class KafkaQueue extends Queue implements QueueContract
 
             switch ($message->err) {
                 case RD_KAFKA_RESP_ERR_NO_ERROR:
-                    $job = json_decode($message->payload);
-                    $job->handle();
+                    $data = json_decode($message->payload, true);
+                    if ($data) {
+                        // Dispatch the Laravel job with the decoded payload
+                        dispatch(new \App\Jobs\OrderCompleted($data));
+                    } else {
+                        var_dump("Invalid JSON payload:", $message->payload);
+                    }
+
+                    // $job = json_decode($message->payload);
+                    // $job->handle();
                     break;
                 case RD_KAFKA_RESP_ERR__PARTITION_EOF:
                     var_dump("no more message");
