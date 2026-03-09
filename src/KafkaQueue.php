@@ -53,7 +53,7 @@ class KafkaQueue extends Queue implements QueueContract
                     if ($job) {
                         // Run the job immediately
                         var_dump($job);
-                        $job->handle();
+                        // $job->handle();
                         echo "Job executed successfully\n";
                     } else {
                         var_dump("Failed to unserialize job payload:", $message->payload);
