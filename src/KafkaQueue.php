@@ -25,16 +25,19 @@ class KafkaQueue extends Queue implements QueueContract
         // $topic->produce(RD_KAFKA_PARTITION_UA, 0, serialize($job));
         // $topic->produce(RD_KAFKA_PARTITION_UA, 0, json_encode($job));
         $topic->produce(RD_KAFKA_PARTITION_UA, 0, "Hello From the Ambassador APP");
-        $this->producer->poll(0);
 
-        for ($retries = 0; $retries < 10; $retries++) {
-            $result = $this->producer->flush(1000);
-            if ($result === RD_KAFKA_RESP_ERR_NO_ERROR) {
-                return true;
-            }
-        }
+        $this->producer->flush(1000);
 
-        throw new \RuntimeException('Kafka producer flush failed');
+        // $this->producer->poll(0);
+
+        // for ($retries = 0; $retries < 10; $retries++) {
+        //     $result = $this->producer->flush(1000);
+        //     if ($result === RD_KAFKA_RESP_ERR_NO_ERROR) {
+        //         return true;
+        //     }
+        // }
+
+        // throw new \RuntimeException('Kafka producer flush failed');
 
     }
 
