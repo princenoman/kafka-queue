@@ -25,8 +25,16 @@ class KafkaQueue extends Queue implements QueueContract
         // $topic->produce(RD_KAFKA_PARTITION_UA, 0, serialize($job));
         // $topic->produce(RD_KAFKA_PARTITION_UA, 0, json_encode($job));
         $topic->produce(RD_KAFKA_PARTITION_UA, 0, "Hello From the Ambassador APP");
+        $this->producer->poll(0);
 
-        $this->producer->flush(1000);
+        for ($retries = 0; $retries < 10; $retries++) {
+            $result = $this->producer->flush(1000);
+            if ($result === RD_KAFKA_RESP_ERR_NO_ERROR) {
+                return true;
+            }
+        }
+
+        throw new \RuntimeException('Kafka producer flush failed');
 
     }
 
@@ -61,15 +69,14 @@ class KafkaQueue extends Queue implements QueueContract
                     // }
                     var_dump($message->payload);
                     return $message->payload;
-                    break;
 
                 case RD_KAFKA_RESP_ERR__PARTITION_EOF:
                     var_dump("No more messages");
-                    break;
+                    return null;
 
                 case RD_KAFKA_RESP_ERR__TIMED_OUT:
                     var_dump("Timed Out");
-                    break;
+                    return null;
 
                 default:
                     throw new \Exception($message->errstr(), $message->err);
@@ -77,6 +84,7 @@ class KafkaQueue extends Queue implements QueueContract
 
         } catch (\Exception $e) {
             var_dump("Kafka consume exception:", $e->getMessage());
+            return null;
         }
     }
 
