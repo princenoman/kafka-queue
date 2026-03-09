@@ -5,13 +5,13 @@
   },
   "autoload": {
     "psr-4": {
-      "Prince\\KafkaQueue\\": "src/"
+      "Kafka\\": "src/"
     }
   },
   "extra": {
     "laravel": {
       "providers": [
-        "Prince\\KafkaQueue\\KafkaServiceProvider"
+        "Kafka\\KafkaServiceProvider"
       ]
     }
   },
