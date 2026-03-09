@@ -52,6 +52,7 @@ class KafkaQueue extends Queue implements QueueContract
 
                     if ($job) {
                         // Run the job immediately
+                        var_dump($job);
                         $job->handle();
                         echo "Job executed successfully\n";
                     } else {
