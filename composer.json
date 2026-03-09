@@ -8,6 +8,13 @@
       "Prince\\KafkaQueue\\": "src/"
     }
   },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Prince\\KafkaQueue\\KafkaQueueServiceProvider"
+      ]
+    }
+  },
   "authors": [
     {
       "name": "Abdullah Al Noman Prince",
