@@ -22,7 +22,7 @@ class KafkaQueue extends Queue implements QueueContract
     {
         $topic = $this->producer->newTopic($queue ?? env('KAFKA_QUEUE'));
 
-        $topic->produce(RD_KAFKA_PARTITION_UA, 0, json_encode($job));
+        $topic->produce(RD_KAFKA_PARTITION_UA, 0, serialize($job));
 
         $this->producer->flush(1000);
 
@@ -36,39 +36,41 @@ class KafkaQueue extends Queue implements QueueContract
 
     public function pop($queue = null)
     {
-
-        $this->consumer->subscribe([$queue]);
+        // Subscribe to the topic (use env default if $queue not provided)
+        $this->consumer->subscribe([$queue ?? env('KAFKA_QUEUE')]);
 
         try {
+            // Consume a single message (timeout in ms)
             $message = $this->consumer->consume(120 * 1000);
 
             switch ($message->err) {
                 case RD_KAFKA_RESP_ERR_NO_ERROR:
-                    $data = json_decode($message->payload, true);
-                    if ($data) {
-                        // Dispatch the Laravel job with the decoded payload
-                        dispatch(new \App\Jobs\OrderCompleted($data));
-                    } else {
-                        var_dump("Invalid JSON payload:", $message->payload);
-                    }
+                    // Unserialize the job object
+                    $job = unserialize($message->payload);
 
-                    // $job = json_decode($message->payload);
-                    // $job->handle();
+                    if ($job) {
+                        // Run the job immediately
+                        $job->handle();
+                        echo "Job executed successfully\n";
+                    } else {
+                        var_dump("Failed to unserialize job payload:", $message->payload);
+                    }
                     break;
+
                 case RD_KAFKA_RESP_ERR__PARTITION_EOF:
-                    var_dump("no more message");
+                    var_dump("No more messages");
                     break;
+
                 case RD_KAFKA_RESP_ERR__TIMED_OUT:
                     var_dump("Timed Out");
                     break;
+
                 default:
                     throw new \Exception($message->errstr(), $message->err);
-                    break;
-
             }
 
         } catch (\Exception $e) {
-            var_dump($e->getMessage());
+            var_dump("Kafka consume exception:", $e->getMessage());
         }
     }
 
