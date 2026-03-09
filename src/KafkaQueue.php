@@ -23,10 +23,6 @@ class KafkaQueue extends Queue implements QueueContract
         $topic = $this->producer->newTopic($queue ?? env('KAFKA_QUEUE'));
 
         $topic->produce(RD_KAFKA_PARTITION_UA, 0, serialize($job));
-        // $topic->produce(RD_KAFKA_PARTITION_UA, 0, json_encode($job));
-        // $topic->produce(RD_KAFKA_PARTITION_UA, 0, "Hello From the Ambassador APP");
-
-        // $this->producer->flush(100000);
 
         $this->producer->poll(0);
 
@@ -38,6 +34,11 @@ class KafkaQueue extends Queue implements QueueContract
         }
 
         throw new \RuntimeException('Kafka producer flush failed');
+
+        // $topic->produce(RD_KAFKA_PARTITION_UA, 0, json_encode($job));
+        // $topic->produce(RD_KAFKA_PARTITION_UA, 0, "Hello From the Ambassador APP");
+
+        // $this->producer->flush(100000);
 
     }
 
