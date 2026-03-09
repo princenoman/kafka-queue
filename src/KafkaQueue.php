@@ -23,7 +23,8 @@ class KafkaQueue extends Queue implements QueueContract
         $topic = $this->producer->newTopic($queue ?? env('KAFKA_QUEUE'));
 
         // $topic->produce(RD_KAFKA_PARTITION_UA, 0, serialize($job));
-        $topic->produce(RD_KAFKA_PARTITION_UA, 0, json_encode($job));
+        // $topic->produce(RD_KAFKA_PARTITION_UA, 0, json_encode($job));
+        $topic->produce(RD_KAFKA_PARTITION_UA, 0, "Hello From the Ambassador APP");
 
         $this->producer->flush(1000);
 
@@ -48,16 +49,17 @@ class KafkaQueue extends Queue implements QueueContract
                 case RD_KAFKA_RESP_ERR_NO_ERROR:
                     // Unserialize the job object
                     // $job = unserialize($message->payload);
-                    $job = json_decode($message->payload, true);
+                    // $job = json_decode($message->payload, true);
 
-                    if ($job) {
-                        // Run the job immediately
-                        var_dump($job);
-                        // $job->handle();
-                        echo "Job executed successfully\n";
-                    } else {
-                        var_dump("Failed to unserialize job payload:", $message->payload);
-                    }
+                    // if ($job) {
+                    //     // Run the job immediately
+                    //     var_dump($job);
+                    //     // $job->handle();
+                    //     echo "Job executed successfully\n";
+                    // } else {
+                    //     var_dump("Failed to unserialize job payload:", $message->payload);
+                    // }
+                    var_dump($message->payload);
                     break;
 
                 case RD_KAFKA_RESP_ERR__PARTITION_EOF:
