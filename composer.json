@@ -11,7 +11,7 @@
   "extra": {
     "laravel": {
       "providers": [
-        "Prince\\KafkaQueue\\KafkaQueueServiceProvider"
+        "Prince\\KafkaQueue\\KafkaServiceProvider"
       ]
     }
   },
