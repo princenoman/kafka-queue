@@ -60,6 +60,7 @@ class KafkaQueue extends Queue implements QueueContract
                     //     var_dump("Failed to unserialize job payload:", $message->payload);
                     // }
                     var_dump($message->payload);
+                    return $message->payload;
                     break;
 
                 case RD_KAFKA_RESP_ERR__PARTITION_EOF:
