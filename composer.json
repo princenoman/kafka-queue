@@ -1,0 +1,18 @@
+{
+  "name": "prince/kafka-queue",
+  "require-dev": {
+    "laravel/framework": "^12.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Prince\\KafkaQueue\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Abdullah Al Noman Prince",
+      "email": "prince1000bd@gmail.com"
+    }
+  ],
+  "require": {}
+}
