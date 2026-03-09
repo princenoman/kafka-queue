@@ -22,7 +22,7 @@ class KafkaQueue extends Queue implements QueueContract
     {
         $topic = $this->producer->newTopic($queue ?? env('KAFKA_QUEUE'));
 
-        $topic->produce(RD_KAFKA_PARTITION_UA, 0, serialize($job));
+        $topic->produce(RD_KAFKA_PARTITION_UA, 0, json_encode($job));
 
         $this->producer->flush(1000);
 
@@ -44,7 +44,7 @@ class KafkaQueue extends Queue implements QueueContract
 
             switch ($message->err) {
                 case RD_KAFKA_RESP_ERR_NO_ERROR:
-                    $job = unserialize($message->payload);
+                    $job = json_decode($message->payload);
                     $job->handle();
                     break;
                 case RD_KAFKA_RESP_ERR__PARTITION_EOF:
