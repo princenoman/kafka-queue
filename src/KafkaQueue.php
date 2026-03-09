@@ -60,6 +60,7 @@ class KafkaQueue extends Queue implements QueueContract
                 case RD_KAFKA_RESP_ERR_NO_ERROR:
                     // Unserialize the job object
                     $job = unserialize($message->payload);
+                    $job->handle();
                     // $job = json_decode($message->payload, true);
 
                     // if ($job) {
