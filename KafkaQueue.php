@@ -55,7 +55,6 @@ class KafkaQueue extends Queue implements QueueContract
                     } else {
                         var_dump("Invalid JSON payload:", $message->payload);
                     }
-                    break;
 
                     // $job = json_decode($message->payload);
                     // $job->handle();
